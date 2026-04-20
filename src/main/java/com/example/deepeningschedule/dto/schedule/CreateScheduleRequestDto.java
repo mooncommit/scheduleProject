@@ -1,11 +1,12 @@
-package com.example.deepeningschedule.dto;
+package com.example.deepeningschedule.dto.schedule;
 
-import java.time.LocalDateTime;
+import com.example.deepeningschedule.entity.User;
+
 
 public class CreateScheduleRequestDto {
     private String title;
     private String content;
-    private String author;
+    private User user;
 
 
     public String getTitle() {
@@ -16,8 +17,8 @@ public class CreateScheduleRequestDto {
         return content;
     }
 
-    public String getAuthor() {
-        return author;
+    public User getUser() {
+        return user;
     }
 }
 

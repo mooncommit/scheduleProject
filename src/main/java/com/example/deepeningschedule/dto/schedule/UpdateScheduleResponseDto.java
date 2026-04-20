@@ -1,23 +1,24 @@
-package com.example.deepeningschedule.dto;
+package com.example.deepeningschedule.dto.schedule;
 
+import com.example.deepeningschedule.entity.User;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
-public class GetOneScheduleResponseDto {
+public class UpdateScheduleResponseDto {
     private final Long id;
     private final String title;
     private final String content;
-    private final String author;
+    private final User user;
     private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
 
-    public GetOneScheduleResponseDto(Long id, String title, String content, String author, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    public UpdateScheduleResponseDto(Long id, String title, String content, User user, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.author = author;
+        this.user = user;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }

@@ -1,6 +1,6 @@
 package com.example.deepeningschedule.entity;
 
-import com.example.deepeningschedule.dto.UpdateScheduleRequestDto;
+import com.example.deepeningschedule.dto.schedule.UpdateScheduleRequestDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;

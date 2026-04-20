@@ -1,6 +1,6 @@
 package com.example.deepeningschedule.controller;
 
-import com.example.deepeningschedule.dto.*;
+import com.example.deepeningschedule.dto.schedule.*;
 import com.example.deepeningschedule.service.ScheduleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -23,8 +23,8 @@ public class ScheduleController {
 
     // 전체 일정 조회
     @GetMapping
-    public ResponseEntity<List<GetAllSchedulesResponseDto>> getAllSchedules(@RequestParam(required = false) String author) {
-        List<GetAllSchedulesResponseDto> responseDto = scheduleService.getAllSchedules(author);
+    public ResponseEntity<List<GetAllSchedulesResponseDto>> getAllSchedules() {
+        List<GetAllSchedulesResponseDto> responseDto = scheduleService.getAllSchedules();
         return ResponseEntity.ok(responseDto);
     }
 

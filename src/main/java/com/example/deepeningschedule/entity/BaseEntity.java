@@ -1,6 +1,5 @@
 package com.example.deepeningschedule.entity;
 
-import com.example.deepeningschedule.dto.UpdateScheduleRequestDto;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import org.springframework.data.annotation.CreatedDate;

@@ -1,6 +1,6 @@
 package com.example.deepeningschedule.service;
 
-import com.example.deepeningschedule.dto.*;
+import com.example.deepeningschedule.dto.schedule.*;
 import com.example.deepeningschedule.entity.Schedule;
 import com.example.deepeningschedule.repository.ScheduleRepository;
 import jakarta.persistence.EntityNotFoundException;
@@ -21,7 +21,7 @@ public class ScheduleService {
         Schedule schedule = new Schedule(
                 request.getTitle(),
                 request.getContent(),
-                request.getAuthor()
+                request.getUser()
         );
 
         Schedule savedSchedules = scheduleRepository.save(schedule);
@@ -30,7 +30,7 @@ public class ScheduleService {
                 savedSchedules.getId(),
                 savedSchedules.getTitle(),
                 savedSchedules.getContent(),
-                savedSchedules.getAuthor(),
+                savedSchedules.getUser(),
                 savedSchedules.getCreatedAt(),
                 savedSchedules.getModifiedAt()
         );
@@ -39,7 +39,7 @@ public class ScheduleService {
 
     // 전체 조회 메서드
     @Transactional(readOnly = true)
-    public List<GetAllSchedulesResponseDto> getAllSchedules(String author) {
+    public List<GetAllSchedulesResponseDto> getAllSchedules() {
         // 1. 전체 일정 가져오기
         List<Schedule> schedules = scheduleRepository.findAll();
 
@@ -49,7 +49,7 @@ public class ScheduleService {
                         schedule.getId(),
                         schedule.getTitle(),
                         schedule.getContent(),
-                        schedule.getAuthor(),
+                        schedule.getUser(),
                         schedule.getCreatedAt(),
                         schedule.getModifiedAt()
                 ))
@@ -71,7 +71,7 @@ public class ScheduleService {
                 schedule.getId(),
                 schedule.getTitle(),
                 schedule.getContent(),
-                schedule.getAuthor(),
+                schedule.getUser(),
                 schedule.getCreatedAt(),
                 schedule.getModifiedAt()
         );
@@ -88,7 +88,7 @@ public class ScheduleService {
                 schedule.getId(),
                 schedule.getTitle(),
                 schedule.getContent(),
-                schedule.getAuthor(),
+                schedule.getUser(),
                 schedule.getCreatedAt(),
                 schedule.getModifiedAt()
         );
