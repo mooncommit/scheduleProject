@@ -1,7 +1,5 @@
 package com.example.deepeningschedule.controller;
 
-import com.example.deepeningschedule.dto.schedule.GetAllSchedulesResponseDto;
-import com.example.deepeningschedule.dto.schedule.GetOneScheduleResponseDto;
 import com.example.deepeningschedule.dto.user.*;
 import com.example.deepeningschedule.service.UserService;
 import jakarta.servlet.ServletRequest;
@@ -60,6 +58,16 @@ public class UserController {
         UpdateUserResponseDto responseDto = userService.updateUser(id, result);
         // 2. 반환 객체 만들기
         ResponseEntity<UpdateUserResponseDto> response = new ResponseEntity<>(responseDto, HttpStatus.OK);
+        // 3. 반환
+        return response;
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+        // 1. service에서 id에 해당하는 유저 삭제 요청
+        userService.delectUser(id);
+        // 2. 반환 객체 만들기
+        ResponseEntity<Void> response = new ResponseEntity<>(HttpStatus.OK);
         // 3. 반환
         return response;
     }
