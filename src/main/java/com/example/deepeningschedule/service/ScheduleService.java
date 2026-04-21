@@ -57,7 +57,7 @@ public class ScheduleService {
         return result;
     }
 
-    // 다 건 조회
+    // 단 건 조회
     @Transactional(readOnly = true)
     public GetOneScheduleResponseDto getOneSchedule(Long id) {
 //        Optional<Schedule> optionalSchedule = scheduleRepository.findById(id);

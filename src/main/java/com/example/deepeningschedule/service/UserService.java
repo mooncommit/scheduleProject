@@ -3,6 +3,7 @@ package com.example.deepeningschedule.service;
 import com.example.deepeningschedule.dto.user.CreateUserRequestDto;
 import com.example.deepeningschedule.dto.user.CreateUserResponseDto;
 import com.example.deepeningschedule.dto.user.GetAllUserResponseDto;
+import com.example.deepeningschedule.dto.user.GetOneUserResponseDto;
 import com.example.deepeningschedule.entity.Schedule;
 import com.example.deepeningschedule.entity.User;
 import com.example.deepeningschedule.repository.UserRepository;
@@ -14,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -68,12 +70,42 @@ public class UserService {
         return result;
     }
 
-//    // 단 건 조회
-//    @Transactional(readOnly = true)
-//    public void getOneUser(Long id) {
+    // 단 건 조회
+    @Transactional(readOnly = true)
+    public GetOneUserResponseDto getOneUser(Long id) {
+        // 1. id로 유저 가져오기
+//        Optional<User> optionalUser = userRepository.findById(id);
 //
-//
-//    }
+////        // orElseThrow를 풀어 쓰기
+////        // optionalUser에 유저가 없으면 예외처리
+////        if (optionalUser.isEmpty()) {
+////            throw new RuntimeException("유저를 찾을 수 없습니다.");
+////            // 유저가 있으면 꺼내기
+////        } else {
+////            User user = optionalUser.get();
+////        }
+//        // 2. Optional 안에 유저가 없으면 예외처리, 있으면 꺼내기
+//        User user = optionalUser.orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
+
+        // 1. id를 찾아 없으면 예외처리, 있으면 꺼내기
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
+        // 2. 꺼낸 user 객체에서 값 가져오기
+        Long userId = user.getId();
+        String userName = user.getUsername();
+        String userEmail = user.getEmail();
+        LocalDateTime userCreatedAt = user.getCreatedAt();
+        LocalDateTime userModifiedAt = user.getModifiedAt();
+
+        // 3. 가져온 값을 User -> DTO로 변환
+        GetOneUserResponseDto responseDto = new GetOneUserResponseDto(
+                userId, userName, userEmail,
+                userCreatedAt, userModifiedAt
+        );
+
+        // 4. 만든 responseDto 반환
+        return responseDto;
+
+    }
 
 
 }

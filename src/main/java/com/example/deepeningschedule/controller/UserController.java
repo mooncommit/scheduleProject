@@ -1,9 +1,11 @@
 package com.example.deepeningschedule.controller;
 
 import com.example.deepeningschedule.dto.schedule.GetAllSchedulesResponseDto;
+import com.example.deepeningschedule.dto.schedule.GetOneScheduleResponseDto;
 import com.example.deepeningschedule.dto.user.CreateUserRequestDto;
 import com.example.deepeningschedule.dto.user.CreateUserResponseDto;
 import com.example.deepeningschedule.dto.user.GetAllUserResponseDto;
+import com.example.deepeningschedule.dto.user.GetOneUserResponseDto;
 import com.example.deepeningschedule.service.UserService;
 import jakarta.servlet.ServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -36,15 +38,20 @@ public class UserController {
     public ResponseEntity<List<GetAllUserResponseDto>> getAllUsers(ServletRequest servletRequest) {
         // 1. service에서 전체 유저 목록 가져오기
         List<GetAllUserResponseDto> responseDtoList = userService.getAllUsers();
-        // 2. 변환 객체(List) 만들기
+        // 2. 반환 객체(List) 만들기
         ResponseEntity<List<GetAllUserResponseDto>> response = new ResponseEntity<>(responseDtoList, HttpStatus.OK);
         // 3. 반환하기
         return response;
     }
 
-//    // 단 건 조회
-//    @GetMapping("/{id}")
-//    public void getOneUser(@PathVariable Long id) {
-//
-//    }
+    // 단 건 조회
+    @GetMapping("/{id}")
+    public ResponseEntity<GetOneUserResponseDto> getOneUser(@PathVariable Long id) {
+        // 1. service에서 id에 해당하는 유저 가져오기
+        GetOneUserResponseDto responseDto = userService.getOneUser(id);
+        // 2. 반환 객체 만들기
+        ResponseEntity<GetOneUserResponseDto> response = new ResponseEntity<>(responseDto, HttpStatus.OK);
+        // 3. 반환
+        return response;
+    }
 }
