@@ -1,15 +1,17 @@
 package com.example.deepeningschedule.controller;
 
+import com.example.deepeningschedule.dto.schedule.GetAllSchedulesResponseDto;
 import com.example.deepeningschedule.dto.user.CreateUserRequestDto;
 import com.example.deepeningschedule.dto.user.CreateUserResponseDto;
+import com.example.deepeningschedule.dto.user.GetAllUserResponseDto;
 import com.example.deepeningschedule.service.UserService;
+import jakarta.servlet.ServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/users")
@@ -28,6 +30,21 @@ public class UserController {
 
         // 반환
         return response;
-
     }
+
+    @GetMapping
+    public ResponseEntity<List<GetAllUserResponseDto>> getAllUsers(ServletRequest servletRequest) {
+        // 1. service에서 전체 유저 목록 가져오기
+        List<GetAllUserResponseDto> responseDtoList = userService.getAllUsers();
+        // 2. 변환 객체(List) 만들기
+        ResponseEntity<List<GetAllUserResponseDto>> response = new ResponseEntity<>(responseDtoList, HttpStatus.OK);
+        // 3. 반환하기
+        return response;
+    }
+
+//    // 단 건 조회
+//    @GetMapping("/{id}")
+//    public void getOneUser(@PathVariable Long id) {
+//
+//    }
 }
