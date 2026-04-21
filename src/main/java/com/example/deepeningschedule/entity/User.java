@@ -1,5 +1,6 @@
 package com.example.deepeningschedule.entity;
 
+import com.example.deepeningschedule.dto.user.UpdateUserRequestDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -30,5 +31,12 @@ public class User extends BaseEntity {
 
     public String getEmail() {
         return email;
+    }
+
+    // update 기능
+    public User update(String username, String email) {
+        this.username = username;
+        this.email = email;
+        return this;
     }
 }

@@ -1,9 +1,6 @@
 package com.example.deepeningschedule.service;
 
-import com.example.deepeningschedule.dto.user.CreateUserRequestDto;
-import com.example.deepeningschedule.dto.user.CreateUserResponseDto;
-import com.example.deepeningschedule.dto.user.GetAllUserResponseDto;
-import com.example.deepeningschedule.dto.user.GetOneUserResponseDto;
+import com.example.deepeningschedule.dto.user.*;
 import com.example.deepeningschedule.entity.Schedule;
 import com.example.deepeningschedule.entity.User;
 import com.example.deepeningschedule.repository.UserRepository;
@@ -104,8 +101,36 @@ public class UserService {
 
         // 4. 만든 responseDto 반환
         return responseDto;
-
     }
 
-
+    // 유저 수정
+    @Transactional
+    // DTO를 받으면
+    // Service에서 그냥 user.update(result) 한 방에 끝! 풀어쓸 게 없음
+    // 값을 직접 받으면 Service에서 DTO에서 값 꺼내고
+    // 꺼낸 값을 update()에 넣는 과정을 풀어쓸 수 있다.
+    // 뭐가 다를까..
+    public UpdateUserResponseDto updateUser(Long id, UpdateUserRequestDto result) {
+        // 1. id를 찾아 없으면 예외처리, 있으면 꺼내기
+        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다"));
+        // 2. 찾은 user 업데이트
+        // - result에서 값 꺼내기
+        String newUserName = result.getUsername();
+        String newUserEmail = result.getEmail();
+        // - 꺼낸 값 업데이트(자동 저장)
+        User updatedUser = user.update(newUserName, newUserEmail);
+        // 3. 업테이트 한 updateUser에서 값 가져오기
+        Long userId = updatedUser.getId();
+        String userName = updatedUser.getUsername();
+        String userEmail = updatedUser.getEmail();
+        LocalDateTime userCreatedAt = updatedUser.getCreatedAt();
+        LocalDateTime userModifiedAt = updatedUser.getModifiedAt();
+        // 4. 가져온 값으로 DTO 만들기
+        UpdateUserResponseDto responseDto = new UpdateUserResponseDto(
+                userId, userName, userEmail,
+                userCreatedAt, userModifiedAt
+        );
+        // 만든 DTO 반환
+        return responseDto;
+    }
 }
