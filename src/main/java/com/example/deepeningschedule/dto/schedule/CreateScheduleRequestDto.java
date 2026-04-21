@@ -6,7 +6,7 @@ import com.example.deepeningschedule.entity.User;
 public class CreateScheduleRequestDto {
     private String title;
     private String content;
-    private User user;
+    private Long userId;
 
 
     public String getTitle() {
@@ -17,8 +17,8 @@ public class CreateScheduleRequestDto {
         return content;
     }
 
-    public User getUser() {
-        return user;
+    public Long getUserId() {
+        return userId;
     }
 }
 

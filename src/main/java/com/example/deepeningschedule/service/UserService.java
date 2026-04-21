@@ -141,6 +141,5 @@ public class UserService {
         User findUser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
         // 2. 찾은 유저 삭제
         userRepository.delete(findUser);
-
     }
 }

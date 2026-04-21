@@ -2,7 +2,9 @@ package com.example.deepeningschedule.service;
 
 import com.example.deepeningschedule.dto.schedule.*;
 import com.example.deepeningschedule.entity.Schedule;
+import com.example.deepeningschedule.entity.User;
 import com.example.deepeningschedule.repository.ScheduleRepository;
+import com.example.deepeningschedule.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,13 +17,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class ScheduleService {
     private final ScheduleRepository scheduleRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public CreateScheduleResponseDto save(CreateScheduleRequestDto request) {
+        // 1. userId 찾기 (없으면 예외처리)
+        User user = userRepository.findById(request.getUserId()).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
         Schedule schedule = new Schedule(
                 request.getTitle(),
                 request.getContent(),
-                request.getUser()
+                user
         );
 
         Schedule savedSchedules = scheduleRepository.save(schedule);
@@ -30,7 +35,7 @@ public class ScheduleService {
                 savedSchedules.getId(),
                 savedSchedules.getTitle(),
                 savedSchedules.getContent(),
-                savedSchedules.getUser(),
+                savedSchedules.getUser().getId(),
                 savedSchedules.getCreatedAt(),
                 savedSchedules.getModifiedAt()
         );
@@ -49,7 +54,7 @@ public class ScheduleService {
                         schedule.getId(),
                         schedule.getTitle(),
                         schedule.getContent(),
-                        schedule.getUser(),
+                        schedule.getUser().getId(),
                         schedule.getCreatedAt(),
                         schedule.getModifiedAt()
                 ))
@@ -71,7 +76,7 @@ public class ScheduleService {
                 schedule.getId(),
                 schedule.getTitle(),
                 schedule.getContent(),
-                schedule.getUser(),
+                schedule.getUser().getId(),
                 schedule.getCreatedAt(),
                 schedule.getModifiedAt()
         );
@@ -88,7 +93,7 @@ public class ScheduleService {
                 schedule.getId(),
                 schedule.getTitle(),
                 schedule.getContent(),
-                schedule.getUser(),
+                schedule.getUser().getId(),
                 schedule.getCreatedAt(),
                 schedule.getModifiedAt()
         );

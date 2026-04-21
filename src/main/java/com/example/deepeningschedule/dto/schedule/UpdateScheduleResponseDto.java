@@ -10,15 +10,15 @@ public class UpdateScheduleResponseDto {
     private final Long id;
     private final String title;
     private final String content;
-    private final User user;
+    private final Long userId;
     private final LocalDateTime createdAt;
     private final LocalDateTime modifiedAt;
 
-    public UpdateScheduleResponseDto(Long id, String title, String content, User user, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+    public UpdateScheduleResponseDto(Long id, String title, String content, Long userId, LocalDateTime createdAt, LocalDateTime modifiedAt) {
         this.id = id;
         this.title = title;
         this.content = content;
-        this.user = user;
+        this.userId = userId;
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }
