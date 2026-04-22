@@ -1,7 +1,9 @@
 package com.example.deepeningschedule.service;
 
+import com.example.deepeningschedule.dto.login.LoginRequestDto;
 import com.example.deepeningschedule.dto.user.*;
 import com.example.deepeningschedule.entity.User;
+import com.example.deepeningschedule.repository.ScheduleRepository;
 import com.example.deepeningschedule.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final ScheduleRepository scheduleRepository;
 
     /**
      * 유저 생성
@@ -152,5 +155,24 @@ public class UserService {
         User findUser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
         // 2. 찾은 유저 삭제
         userRepository.delete(findUser);
+    }
+
+    // login
+    @Transactional(readOnly = true)
+    public User login(LoginRequestDto request) {
+        // 1. request 값 꺼내오기
+        String email = request.getEmail();
+        String password = request.getPassword();
+        // 2. email로 유저 찾기
+        User findUser = userRepository.findByEmail(email).orElseThrow(
+                () -> new RuntimeException("유저를 찾을 수 없습니다."));
+        // 3. 찾은 유저 비밀번호 가져오기
+        String findPassword = findUser.getPassword();
+        // 4. 비밀번호 비교하기 (틀리면 예외처리)
+        if (!password.equals(findPassword)) {
+            throw new RuntimeException("비밀번호가 맞지 않습니다.");
+        }
+        // 6. 유저 반환
+        return findUser;
     }
 }
