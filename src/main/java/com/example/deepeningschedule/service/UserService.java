@@ -1,18 +1,14 @@
 package com.example.deepeningschedule.service;
 
 import com.example.deepeningschedule.dto.user.*;
-import com.example.deepeningschedule.entity.Schedule;
 import com.example.deepeningschedule.entity.User;
 import com.example.deepeningschedule.repository.UserRepository;
-import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -20,13 +16,21 @@ import java.util.stream.Collectors;
 public class UserService {
     private final UserRepository userRepository;
 
-    public CreateUserResponseDto save(CreateUserRequestDto result) {
-
+    /**
+     * 유저 생성
+     */
+    @Transactional
+    public CreateUserResponseDto save(CreateUserRequestDto request) {
         // 1. result에서 값 꺼내기
-        String username = result.getUsername();
-        String email = result.getEmail();
+        String username = request.getUsername();
+        String email = request.getEmail();
+        String password = request.getPassword();
+        // 비밀번호 8글자 이상 검증
+        if (password.length() < 8) {
+            throw new RuntimeException("비밀번호는 8글자 이상이어야 합니다!");
+        }
         // 2. 꺼낸 값으로 User 객체 만들기
-        User user = new User(username, email);
+        User user = new User(username, email, password);
         // 3. userRepository에서 save() 기능으로 DB에 저장하기
         User savedUser = userRepository.save(user);
         // 4. 저장된 결과에서 값 꺼내기
@@ -117,8 +121,15 @@ public class UserService {
         // - result에서 값 꺼내기
         String newUserName = result.getUsername();
         String newUserEmail = result.getEmail();
+        String newUserPassword = result.getNewPassword();
+        String oldUserPassword = result.getPassword();
+
+        if (!user.getPassword().equals(oldUserPassword)) {
+            throw new RuntimeException("비밀번호가 맞지 않습니다.");
+        }
+
         // - 꺼낸 값 업데이트(자동 저장)
-        User updatedUser = user.update(newUserName, newUserEmail);
+        User updatedUser = user.update(newUserName, newUserEmail, newUserPassword);
         // 3. 업테이트 한 updateUser에서 값 가져오기
         Long userId = updatedUser.getId();
         String userName = updatedUser.getUsername();

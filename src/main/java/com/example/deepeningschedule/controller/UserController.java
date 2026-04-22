@@ -18,9 +18,9 @@ public class UserController {
     private final UserService userService;
 
     @PostMapping
-    public ResponseEntity<CreateUserResponseDto> createUser(@RequestBody CreateUserRequestDto result) {
+    public ResponseEntity<CreateUserResponseDto> createUser(@RequestBody CreateUserRequestDto request) {
         // service에서 save 메서드 호출해서 response에 담기
-        CreateUserResponseDto responseDto = userService.save(result);
+        CreateUserResponseDto responseDto = userService.save(request);
 
         // 반환객체 만들기
         ResponseEntity<CreateUserResponseDto> response = new ResponseEntity<>(responseDto, HttpStatus.CREATED);
@@ -30,7 +30,7 @@ public class UserController {
     }
 
     @GetMapping
-    public ResponseEntity<List<GetAllUserResponseDto>> getAllUsers(ServletRequest servletRequest) {
+    public ResponseEntity<List<GetAllUserResponseDto>> getAllUsers() {
         // 1. service에서 전체 유저 목록 가져오기
         List<GetAllUserResponseDto> responseDtoList = userService.getAllUsers();
         // 2. 반환 객체(List) 만들기

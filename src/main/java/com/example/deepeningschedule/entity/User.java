@@ -16,9 +16,13 @@ public class User extends BaseEntity {
     private String username;
     private String email;
 
-    public User(String username, String email) {
+    // 비밀번호 필드 추가
+    private String password;
+
+    public User(String username, String email, String password) {
         this.username = username;
         this.email = email;
+        this.password = password;
     }
 
     public Long getId() {
@@ -33,10 +37,13 @@ public class User extends BaseEntity {
         return email;
     }
 
+    public String getPassword() { return password; }
+
     // update 기능
-    public User update(String username, String email) {
+    public User update(String username, String email, String newPassword) {
         this.username = username;
         this.email = email;
+        this.password = newPassword;
         return this;
     }
 }
