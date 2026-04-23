@@ -1,6 +1,6 @@
 package com.example.deepeningschedule.entity;
 
-import com.example.deepeningschedule.dto.UpdateScheduleRequestDto;
+import com.example.deepeningschedule.dto.schedule.UpdateScheduleRequestDto;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -15,12 +15,15 @@ public class Schedule extends BaseEntity{
 
     private String title;
     private String content;
-    private String author;
 
-    public Schedule(String title, String content, String author) {
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public Schedule(String title, String content, User user) {
         this.title = title;
         this.content = content;
-        this.author = author;
+        this.user = user;
     }
 
 
@@ -36,14 +39,12 @@ public class Schedule extends BaseEntity{
         return content;
     }
 
-    public String getAuthor() {
-        return author;
+    public User getUser() {
+        return user;
     }
 
     public void update(UpdateScheduleRequestDto result) {
         this.title = result.getTitle();
         this.content = result.getContent();
-        this.author = result.getAuthor();
-
     }
 }
