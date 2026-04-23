@@ -1,7 +1,9 @@
 package com.example.deepeningschedule.service;
 
+import com.example.deepeningschedule.dto.login.LoginRequestDto;
 import com.example.deepeningschedule.dto.user.*;
 import com.example.deepeningschedule.entity.User;
+import com.example.deepeningschedule.repository.ScheduleRepository;
 import com.example.deepeningschedule.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -15,6 +17,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    private final ScheduleRepository scheduleRepository;
 
     /**
      * 유저 생성
@@ -114,9 +117,13 @@ public class UserService {
     // 값을 직접 받으면 Service에서 DTO에서 값 꺼내고
     // 꺼낸 값을 update()에 넣는 과정을 풀어쓸 수 있다.
     // 뭐가 다를까..
-    public UpdateUserResponseDto updateUser(Long id, UpdateUserRequestDto result) {
+    public UpdateUserResponseDto updateUser(Long id, UpdateUserRequestDto result, User user) {
         // 1. id를 찾아 없으면 예외처리, 있으면 꺼내기
-        User user = userRepository.findById(id).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다"));
+        User findUser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다"));
+        // 검증
+        if (!findUser.getEmail().equals(user.getEmail())) {
+            throw new RuntimeException("본인 정보만 수정 가능합니다.");
+        }
         // 2. 찾은 user 업데이트
         // - result에서 값 꺼내기
         String newUserName = result.getUsername();
@@ -124,12 +131,12 @@ public class UserService {
         String newUserPassword = result.getNewPassword();
         String oldUserPassword = result.getPassword();
 
-        if (!user.getPassword().equals(oldUserPassword)) {
+        if (!findUser.getPassword().equals(oldUserPassword)) {
             throw new RuntimeException("비밀번호가 맞지 않습니다.");
         }
 
         // - 꺼낸 값 업데이트(자동 저장)
-        User updatedUser = user.update(newUserName, newUserEmail, newUserPassword);
+        User updatedUser = findUser.update(newUserName, newUserEmail, newUserPassword);
         // 3. 업테이트 한 updateUser에서 값 가져오기
         Long userId = updatedUser.getId();
         String userName = updatedUser.getUsername();
@@ -147,10 +154,33 @@ public class UserService {
 
     // 유저 삭제
     @Transactional
-    public void delectUser(Long id) {
+    public void delectUser(Long id, User user) {
         // 1. id 찾는데 없으면 예외처리, 있으면 꺼내기
         User findUser = userRepository.findById(id).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
+        // 검증
+        if (!findUser.getEmail().equals(user.getEmail())) {
+            throw new RuntimeException("본인 정보만 삭제 가능합니다.");
+        }
         // 2. 찾은 유저 삭제
         userRepository.delete(findUser);
+    }
+
+    // Login
+    @Transactional(readOnly = true)
+    public User login(LoginRequestDto request) {
+        // 1. request 값 꺼내오기
+        String email = request.getEmail();
+        String password = request.getPassword();
+        // 2. email로 유저 찾기
+        User findUser = userRepository.findByEmail(email).orElseThrow(
+                () -> new RuntimeException("유저를 찾을 수 없습니다."));
+        // 3. 찾은 유저 비밀번호 가져오기
+        String findPassword = findUser.getPassword();
+        // 4. 비밀번호 비교하기 (틀리면 예외처리)
+        if (!password.equals(findPassword)) {
+            throw new RuntimeException("비밀번호가 맞지 않습니다.");
+        }
+        // 6. 유저 반환
+        return findUser;
     }
 }
