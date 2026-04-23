@@ -53,22 +53,34 @@ public class UserController {
         return response;
     }
 
-    // 유저 수정
+    // 유저 수정 ㅇ
     @PutMapping("/{id}")
-    public ResponseEntity<UpdateUserResponseDto> updateUser(@PathVariable Long id,
-                                                            @RequestBody UpdateUserRequestDto result) {
+    public ResponseEntity<UpdateUserResponseDto> updateUser(
+            @PathVariable Long id, @RequestBody UpdateUserRequestDto result, HttpServletRequest servletRequest) {
+        // 세션 저장
+        HttpSession session = servletRequest.getSession(false);
+        if (session == null) {
+            throw new RuntimeException("로그인이 필요합니다.");
+        }
+        User user = (User) session.getAttribute("loginUser");
         // 1. service에서 업데이트한 유저 가져오기
-        UpdateUserResponseDto responseDto = userService.updateUser(id, result);
+        UpdateUserResponseDto responseDto = userService.updateUser(id, result, user);
         // 2. 반환 객체 만들기
         ResponseEntity<UpdateUserResponseDto> response = new ResponseEntity<>(responseDto, HttpStatus.OK);
         // 3. 반환
         return response;
     }
 
+    // 삭제 ㅇ
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id, HttpServletRequest servletRequest) {
+        HttpSession session = servletRequest.getSession(false);
+        if (session == null) {
+            throw new RuntimeException("로그인이 필요합니다.");
+        }
+        User user = (User) session.getAttribute("loginUser");
         // 1. service에서 id에 해당하는 유저 삭제 요청
-        userService.delectUser(id);
+        userService.delectUser(id, user);
         // 2. 반환 객체 만들기
         ResponseEntity<Void> response = new ResponseEntity<>(HttpStatus.OK);
         // 3. 반환
@@ -77,7 +89,7 @@ public class UserController {
 
     // 로그인
     @PostMapping("/login")
-    public ResponseEntity<Void> login(@RequestBody LoginRequestDto request,
+    public ResponseEntity<String> login(@RequestBody LoginRequestDto request,
                                       HttpServletRequest servletRequest) {
         // 1. service에서 찾은 유저 가져오기
         User user = userService.login(request);
@@ -87,7 +99,7 @@ public class UserController {
         // 3. 세션 저장하기
         session.setAttribute("loginUser", user); // 키, 값
         // 4. 반환 객체 만들기
-        ResponseEntity<Void> response = new ResponseEntity<>(HttpStatus.OK);
+        ResponseEntity<String> response = new ResponseEntity<>("로그인 성공", HttpStatus.OK);
         // 5. 반환
         return response;
 

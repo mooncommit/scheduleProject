@@ -6,6 +6,7 @@ import com.example.deepeningschedule.entity.User;
 import com.example.deepeningschedule.repository.ScheduleRepository;
 import com.example.deepeningschedule.repository.UserRepository;
 import jakarta.persistence.EntityNotFoundException;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,9 +21,8 @@ public class ScheduleService {
     private final UserRepository userRepository;
 
     @Transactional
-    public CreateScheduleResponseDto save(CreateScheduleRequestDto request) {
+    public CreateScheduleResponseDto save(CreateScheduleRequestDto request, User user) {
         // 1. userId 찾기 (없으면 예외처리)
-        User user = userRepository.findById(request.getUserId()).orElseThrow(() -> new RuntimeException("유저를 찾을 수 없습니다."));
         Schedule schedule = new Schedule(
                 request.getTitle(),
                 request.getContent(),
@@ -85,9 +85,13 @@ public class ScheduleService {
 
     // 수정
     @Transactional
-    public UpdateScheduleResponseDto updateSchedule(Long id, UpdateScheduleRequestDto result) {
+    public UpdateScheduleResponseDto updateSchedule(Long id, UpdateScheduleRequestDto result, User user) {
         Schedule schedule = scheduleRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("해당 일정이 없습니다."));
+        // 로그인 한 유저와 같은 지 확인
+        if (!user.getEmail().equals(schedule.getUser().getEmail())) {
+            throw new RuntimeException("본인 일정만 수정할 수 있습니다.");
+        }
         schedule.update(result);
         UpdateScheduleResponseDto responseDto = new UpdateScheduleResponseDto(
                 schedule.getId(),
@@ -102,9 +106,12 @@ public class ScheduleService {
 
     // 삭제
     @Transactional
-    public void deleteSchedule(Long id) {
+    public void deleteSchedule(Long id, User user) {
         Schedule schedule = scheduleRepository.findById(id)
                 .orElseThrow(() -> new IllegalStateException("삭제할 일정이 없습니다."));
+        if (!user.getEmail().equals(schedule.getUser().getEmail())) {
+            throw new RuntimeException("본인 일정만 삭제할 수 있습니다.");
+        }
         scheduleRepository.delete(schedule);
     }
 }
